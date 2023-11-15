@@ -1,0 +1,97 @@
+#! /opt/homebrew/Cellar/icarus-verilog/12.0/bin/vvp
+:ivl_version "12.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/system.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/vhdl_sys.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/vhdl_textio.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/v2005_math.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/12.0/lib/ivl/va_math.vpi";
+S_0x133806a10 .scope module, "test_file" "test_file" 2 5;
+ .timescale 0 0;
+P_0x6000024f16c0 .param/l "i" 0 2 6, +C4<00000000000000000000000000000001>;
+v0x6000003f4ab0_0 .var "A", 15 0;
+v0x6000003f4b40_0 .var "B", 15 0;
+v0x6000003f4bd0_0 .net "Sum", 16 0, L_0x6000000f4320;  1 drivers
+v0x6000003f4c60_0 .var "clk", 0 0;
+v0x6000003f4cf0_0 .var/i "read_file", 31 0;
+v0x6000003f4d80_0 .var/i "value_r", 31 0;
+v0x6000003f4e10_0 .var/i "write_file", 31 0;
+E_0x6000024f1740 .event negedge, v0x6000003f4c60_0;
+E_0x6000024f1780 .event posedge, v0x6000003f4c60_0;
+S_0x1338063c0 .scope module, "aa1" "add" 2 13, 3 3 0, S_0x133806a10;
+ .timescale 0 0;
+    .port_info 0 /INPUT 16 "A";
+    .port_info 1 /INPUT 16 "B";
+    .port_info 2 /OUTPUT 17 "Z";
+P_0x6000024f17c0 .param/l "N" 0 3 4, +C4<00000000000000000000000000010000>;
+v0x6000003f45a0_0 .net "A", 15 0, v0x6000003f4ab0_0;  1 drivers
+v0x6000003f4630_0 .net "B", 15 0, v0x6000003f4b40_0;  1 drivers
+v0x6000003f46c0_0 .net "Z", 16 0, L_0x6000000f4320;  alias, 1 drivers
+v0x6000003f4750_0 .net *"_ivl_0", 16 0, L_0x6000000f4000;  1 drivers
+L_0x1280400a0 .functor BUFT 1, C4<00000000000000001>, C4<0>, C4<0>, C4<0>;
+v0x6000003f47e0_0 .net/2u *"_ivl_10", 16 0, L_0x1280400a0;  1 drivers
+L_0x128040010 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+v0x6000003f4870_0 .net *"_ivl_3", 0 0, L_0x128040010;  1 drivers
+v0x6000003f4900_0 .net *"_ivl_4", 16 0, L_0x6000000f40a0;  1 drivers
+L_0x128040058 .functor BUFT 1, C4<0>, C4<0>, C4<0>, C4<0>;
+v0x6000003f4990_0 .net *"_ivl_7", 0 0, L_0x128040058;  1 drivers
+v0x6000003f4a20_0 .net *"_ivl_8", 16 0, L_0x6000000f4280;  1 drivers
+L_0x6000000f4000 .concat [ 16 1 0 0], v0x6000003f4ab0_0, L_0x128040010;
+L_0x6000000f40a0 .concat [ 16 1 0 0], v0x6000003f4b40_0, L_0x128040058;
+L_0x6000000f4280 .arith/sum 17, L_0x6000000f4000, L_0x6000000f40a0;
+L_0x6000000f4320 .arith/sub 17, L_0x6000000f4280, L_0x1280400a0;
+    .scope S_0x133806a10;
+T_0 ;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x6000003f4c60_0, 0, 1;
+    %pushi/vec4 0, 0, 16;
+    %store/vec4 v0x6000003f4ab0_0, 0, 16;
+    %pushi/vec4 0, 0, 16;
+    %store/vec4 v0x6000003f4b40_0, 0, 16;
+    %vpi_func 2 19 "$fopen" 32, "in_vec.txt", "r" {0 0 0};
+    %store/vec4 v0x6000003f4cf0_0, 0, 32;
+    %vpi_func 2 20 "$fopen" 32, "out_vec.txt", "w" {0 0 0};
+    %store/vec4 v0x6000003f4e10_0, 0, 32;
+    %end;
+    .thread T_0;
+    .scope S_0x133806a10;
+T_1 ;
+    %delay 1, 0;
+    %load/vec4 v0x6000003f4c60_0;
+    %inv;
+    %store/vec4 v0x6000003f4c60_0, 0, 1;
+    %jmp T_1;
+    .thread T_1;
+    .scope S_0x133806a10;
+T_2 ;
+    %wait E_0x6000024f1780;
+T_2.0 ;
+    %vpi_func 2 27 "$feof" 32, v0x6000003f4cf0_0 {0 0 0};
+    %nor/r;
+    %flag_set/vec4 8;
+    %jmp/0xz T_2.1, 8;
+    %wait E_0x6000024f1780;
+    %vpi_func 2 30 "$fscanf" 32, v0x6000003f4cf0_0, "%h %h\012", v0x6000003f4ab0_0, v0x6000003f4b40_0 {0 0 0};
+    %store/vec4 v0x6000003f4d80_0, 0, 32;
+    %jmp T_2.0;
+T_2.1 ;
+    %wait E_0x6000024f1780;
+    %vpi_call 2 33 "$fclose", v0x6000003f4cf0_0 {0 0 0};
+    %vpi_call 2 34 "$fclose", v0x6000003f4e10_0 {0 0 0};
+    %delay 1, 0;
+    %vpi_call 2 35 "$finish" {0 0 0};
+    %end;
+    .thread T_2;
+    .scope S_0x133806a10;
+T_3 ;
+    %wait E_0x6000024f1740;
+    %vpi_call 2 40 "$fwrite", v0x6000003f4e10_0, "%0d %0d %0d\012", v0x6000003f4ab0_0, v0x6000003f4b40_0, v0x6000003f4bd0_0 {0 0 0};
+    %jmp T_3;
+    .thread T_3;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "test_file.v";
+    "./add.v";
